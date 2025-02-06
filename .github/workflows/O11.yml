@@ -93,7 +93,7 @@ jobs:
         run: |
           git clone https://github.com/TheWildJames/AnyKernel3.git -b $BRANCH
           git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android13-5.15
-          git clone https://github.com/TheWildJames/kernel_patches.git
+          git clone https://github.com/WildPlusKernel/kernel_patches.git
       - name: Setup Kernel Source
         working-directory: builds/${{ env.ROOT_DIR }}
         run: |
@@ -125,25 +125,27 @@ jobs:
           cp ../../../susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU-Next/
           cp ../../../susfs4ksu/kernel_patches/50_add_susfs_in_gki-android13-5.15.patch ./common/
           cp ../../../kernel_patches/69_hide_stuff.patch ./common/
-          cp ../../../kernel_patches/selinux.c_fix.patch ./
-          cp ../../../kernel_patches/apk_sign.c_fix.patch ./
-          cp ../../../kernel_patches/Makefile_fix.patch ./
-          cp ../../../kernel_patches/core_hook.c_fix.patch ./
+          #cp ../../../kernel_patches/selinux.c_fix.patch ./
+          #cp ../../../kernel_patches/apk_sign.c_fix.patch ./
+          #cp ../../../kernel_patches/Makefile_fix.patch ./
+          #cp ../../../kernel_patches/core_hook.c_fix.patch ./
+          cp ../../../kernel_patches/KernelSU-Next-Implement-SUSFS-v1.5.5-Universal.patch ./KernelSU-Next
           
           # Apply patches
           cd KernelSU-Next
-          patch -p1 < 10_enable_susfs_for_ksu.patch || true
+          patch -p1 --forward < KernelSU-Next-Implement-SUSFS-v1.5.5-Universal.patch || true
           
           cd ../common
           patch -p1 < 50_add_susfs_in_gki-android13-5.15.patch || true
           patch -p1 -F 3 < 69_hide_stuff.patch || true
           sed -i '/obj-$(CONFIG_KSU_SUSFS_SUS_SU) += sus_su.o/d' ./fs/Makefile
-          
+          git add -A && git commit -a -m "BUILD Kernel" || true
           cd ..
-          patch -p1 -F 3 < selinux.c_fix.patch || true
-          patch -p1 -F 3 < apk_sign.c_fix.patch || true
-          patch -p1 --fuzz=3 < Makefile_fix.patch || true
-          patch -p1 --fuzz=3 < core_hook.c_fix.patch || true
+          git add -A && git commit -a -m "BUILD Kernel" || true  
+          #patch -p1 -F 3 < selinux.c_fix.patch || true
+          #patch -p1 -F 3 < apk_sign.c_fix.patch || true
+          #patch -p1 --fuzz=3 < Makefile_fix.patch || true
+          #patch -p1 --fuzz=3 < core_hook.c_fix.patch || true
       - name: Configure Kernel
         working-directory: builds/${{ env.ROOT_DIR }}/kernel_platform/oneplus11_v/kernel_platform
         run: |
@@ -158,7 +160,8 @@ jobs:
           echo "CONFIG_KSU_SUSFS_SPOOF_UNAME=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_KSU_SUSFS_ENABLE_LOG=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> ./common/arch/arm64/configs/gki_defconfig
-          echo "CONFIG_KSU_SUSFS_SUS_SU=y" >> ./common/arch/arm64/configs/gki_defconfig          
+          echo "CONFIG_KSU_SUSFS_SUS_SU=y" >> ./common/arch/arm64/configs/gki_defconfig  
+          echo "CONFIG_TMPFS_XATTR=y" >> ./common/arch/arm64/configs/gki_defconfig
           
           # Remove defconfig check
           sed -i '2s/check_defconfig//' ./common/build.config.gki
