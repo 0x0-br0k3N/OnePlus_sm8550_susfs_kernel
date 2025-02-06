@@ -164,7 +164,7 @@ jobs:
           sed -i '2s/check_defconfig//' ./common/build.config.gki
 
       - name: Set LTO to THIN
-        working-directory: builds/${{ env.ROOT_DIR }}/kernel_platform/oneplus12_v/kernel_platform
+        working-directory: builds/${{ env.ROOT_DIR }}/kernel_platform/oneplus11_v/kernel_platform
         run: |
           sed -i '/CONFIG_LTO=/s/=n/=y/' "./common/arch/arm64/configs/gki_defconfig"
           sed -i '/CONFIG_LTO_CLANG_FULL=/s/=y/=n/' "./common/arch/arm64/configs/gki_defconfig"
