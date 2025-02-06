@@ -179,7 +179,7 @@ jobs:
           mkdir out
           export PATH="/usr/lib/ccache:$PATH"
           # Modified build command with correct syntax
-          ./oplus/build/oplus_build_kernel.sh -t kalama gki \
+          .kernel_platform/oplus/build/oplus_build_kernel.sh -t kalama gki \
             kalama \
             gki \
             --jobs=$(nproc --all) \
