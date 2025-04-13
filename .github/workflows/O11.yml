@@ -9,7 +9,7 @@ on:
 env:
   DEBIAN_FRONTEND: noninteractive
   ROOT_DIR_PREFIX: "OP11-A13"
-  BRANCH: "android13-5.15"
+  BRANCH: "gki-2.0"
   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
 jobs:
